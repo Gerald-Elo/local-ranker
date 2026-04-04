@@ -7,15 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
+:root{
   --bg:#0f0f11;--bg2:#18181c;--bg3:#222228;--bg4:#2a2a32;
   --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
   --text:#f0f0f2;--text2:#9898a8;--text3:#5a5a6a;
   --accent:#6c8fff;--accent2:#3d5fd4;
   --green:#3ecf8e;--green-bg:rgba(62,207,142,0.1);--green-bdr:rgba(62,207,142,0.3);
-  --blue-bg:rgba(108,143,255,0.1);--blue-bdr:rgba(108,143,255,0.3);
   --red:#ff6b6b;--red-bg:rgba(255,107,107,0.1);--red-bdr:rgba(255,107,107,0.3);
   --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.1);--amber-bdr:rgba(245,158,11,0.3);
+  --purple:#a78bfa;--purple-bg:rgba(139,92,246,0.1);--purple-bdr:rgba(139,92,246,0.35);
   --radius:10px;--radius-lg:14px;
   --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
 }
@@ -23,73 +23,111 @@
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
 .app{display:flex;flex-direction:column;min-height:100dvh;max-width:700px;margin:0 auto}
 .topbar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5}
-.tb-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:7px 14px;border-radius:var(--radius);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;white-space:nowrap;transition:background 0.15s}
-.tb-btn:hover{background:var(--bg4)}.tb-btn:active{transform:scale(0.97)}
-.title-btn{flex:1;background:transparent;border:none;color:var(--text);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;text-align:center;padding:7px 8px;border-radius:var(--radius);transition:background 0.15s;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:7px 14px;border-radius:var(--radius);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;white-space:nowrap;transition:background .15s}
+.tb-btn:hover{background:var(--bg4)}.tb-btn:active{transform:scale(.97)}
+.title-btn{flex:1;background:transparent;border:none;color:var(--text);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;text-align:center;padding:7px 8px;border-radius:var(--radius);transition:background .15s;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .title-btn:hover{background:var(--bg3)}
 .main{flex:1;padding:14px;display:flex;flex-direction:column;gap:12px}
 .empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:60px 20px;text-align:center}
-.empty-state h1{font-size:24px;font-weight:600;letter-spacing:-0.3px}
+.empty-state h1{font-size:24px;font-weight:600;letter-spacing:-.3px}
 .empty-state p{color:var(--text2);font-size:14px}
 .cards-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.card-top{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg) var(--radius-lg) 0 0;overflow:hidden;display:flex;flex-direction:column;transition:border-color 0.2s}
+.card-top{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg) var(--radius-lg) 0 0;overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s,border-width .2s}
 .card-top.flash{border-color:var(--green);border-width:2px}
 .card-name{font-size:14px;font-weight:600;text-align:center;padding:10px 8px 8px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-img-wrap{cursor:pointer;width:100%;aspect-ratio:4/5;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.card-img-wrap:hover{opacity:0.88}.card-img-wrap:active{opacity:0.75}
+.card-img-wrap{cursor:pointer;width:100%;aspect-ratio:4/5;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card-img-wrap:hover{opacity:.88}.card-img-wrap:active{opacity:.75}
 .card-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
 .card-img-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text3);font-size:12px}
 .card-img-placeholder svg{width:36px;height:36px;stroke:var(--text3)}
-.card-elo{text-align:center;padding:5px 8px 7px;font-size:11px;font-family:var(--mono);color:var(--text3);background:var(--bg2);letter-spacing:0.3px}
+.card-elo{text-align:center;padding:5px 8px 7px;font-size:11px;font-family:var(--mono);color:var(--text3);background:var(--bg2);letter-spacing:.3px}
 .stats-panel{background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-lg) var(--radius-lg);overflow:hidden}
 .stats-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:5px 10px;gap:6px;font-size:12px;border-top:1px solid var(--border)}
 .stats-row:first-child{border-top:none}.stats-row:hover{background:var(--bg3)}
 .sv-left{text-align:right;color:var(--text);font-weight:500}
 .sv-right{text-align:left;color:var(--text);font-weight:500}
-.sv-label{text-align:center;color:var(--text3);font-size:10px;white-space:nowrap;padding:0 4px;letter-spacing:0.4px;text-transform:uppercase}
+.sv-label{text-align:center;color:var(--text3);font-size:10px;white-space:nowrap;padding:0 4px;letter-spacing:.4px;text-transform:uppercase}
 .bottom-btns{display:flex;flex-direction:column;gap:8px}
-.tie-btn{width:100%;padding:13px;background:var(--blue-bg);border:1px solid var(--blue-bdr);color:var(--accent);border-radius:var(--radius);cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;transition:background 0.15s}
-.tie-btn:hover{background:rgba(108,143,255,0.18)}.tie-btn:active{transform:scale(0.98)}
-.win-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.win-btn{padding:13px;background:var(--green-bg);border:1px solid var(--green-bdr);color:var(--green);border-radius:var(--radius);cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;transition:background 0.15s}
-.win-btn:hover{background:rgba(62,207,142,0.18)}.win-btn:active{transform:scale(0.98)}
+.tie-btn{width:100%;padding:11px;background:var(--purple-bg);border:1px solid var(--purple-bdr);color:var(--purple);border-radius:var(--radius);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;transition:background .15s}
+.tie-btn:hover{background:rgba(139,92,246,.2)}.tie-btn:active{transform:scale(.98)}
+.win-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr;gap:6px}
+.win-btn{padding:10px 4px;border-radius:var(--radius);cursor:pointer;font-family:var(--font);font-size:11px;font-weight:600;line-height:1.3;text-align:center;transition:background .15s;border:1px solid transparent}
+.win-btn:active{transform:scale(.96)}
+.btn-dl{background:rgba(59,130,246,.22);border-color:rgba(59,130,246,.5);color:#3b82f6}.btn-dl:hover{background:rgba(59,130,246,.32)}
+.btn-l {background:rgba(59,130,246,.13);border-color:rgba(59,130,246,.35);color:#60a5fa}.btn-l:hover {background:rgba(59,130,246,.22)}
+.btn-sl{background:rgba(59,130,246,.07);border-color:rgba(59,130,246,.2);color:#93c5fd}.btn-sl:hover{background:rgba(59,130,246,.14)}
+.btn-sr{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.2);color:#fca5a5}.btn-sr:hover{background:rgba(239,68,68,.14)}
+.btn-r {background:rgba(239,68,68,.13);border-color:rgba(239,68,68,.35);color:#f87171}.btn-r:hover {background:rgba(239,68,68,.22)}
+.btn-dr{background:rgba(239,68,68,.22);border-color:rgba(239,68,68,.5);color:#ef4444}.btn-dr:hover{background:rgba(239,68,68,.32)}
+.win-grid-labels{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:2px}
+.win-grid-label{text-align:center;font-size:10px;color:var(--text3);letter-spacing:.4px;text-transform:uppercase}
 .progress-wrap{display:flex;flex-direction:column;gap:5px}
 .progress-track{height:4px;background:var(--bg3);border-radius:99px;overflow:hidden}
-.progress-fill{height:4px;background:var(--green);border-radius:99px;transition:width 0.4s ease}
+.progress-fill{height:4px;background:var(--green);border-radius:99px;transition:width .4s ease}
 .progress-label{font-size:11px;color:var(--text3);text-align:right;font-family:var(--mono)}
 .no-match{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:60px 20px;text-align:center}
 .no-match h2{font-size:18px;font-weight:600}.no-match p{color:var(--text2);font-size:14px}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:flex-start;justify-content:center;padding:40px 16px 20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);overflow-y:auto}
+
+/* ── Overlay / Modal ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:flex-start;justify-content:center;padding:40px 16px 20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);overflow-y:auto}
 .overlay.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:20px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;margin:auto}
-.modal-header{display:flex;align-items:center;justify-content:space-between}
-.modal-title{font-size:16px;font-weight:600}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:20px;width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;margin:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.modal-title{font-size:16px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal-header-btns{display:flex;gap:6px;flex-shrink:0}
 .close-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;font-family:var(--font);flex-shrink:0}
 .close-btn:hover{background:var(--bg4);color:var(--text)}
+.back-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);height:30px;padding:0 10px;border-radius:var(--radius);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;font-family:var(--font);white-space:nowrap}
+.back-btn:hover{background:var(--bg4);color:var(--text)}
 .modal-section{display:flex;flex-direction:column;gap:6px}
-.modal-label{font-size:11px;color:var(--text3);letter-spacing:0.5px;text-transform:uppercase;font-weight:500}
+.modal-label{font-size:11px;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;font-weight:500}
 .modal-divider{border:none;border-top:1px solid var(--border)}
-.modal-btn{padding:9px 14px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;text-align:left;transition:background 0.15s;width:100%}
-.modal-btn:hover{background:var(--bg4);border-color:var(--border2)}.modal-btn:active{transform:scale(0.98)}
+.modal-btn{padding:9px 14px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;text-align:left;transition:background .15s;width:100%}
+.modal-btn:hover{background:var(--bg4);border-color:var(--border2)}.modal-btn:active{transform:scale(.98)}
 .modal-btn.danger{color:var(--red);border-color:var(--red-bdr)}.modal-btn.danger:hover{background:var(--red-bg)}
 .modal-btn.primary{background:var(--accent2);border-color:var(--accent);color:#fff}.modal-btn.primary:hover{background:var(--accent)}
-.modal-btn.active-folder{background:var(--green-bg);border-color:var(--green-bdr);color:var(--green)}
-.modal-btn.active-folder:hover{background:rgba(62,207,142,0.18)}
-input[type=text],input[type=number],select{width:100%;padding:9px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:13px;outline:none;transition:border-color 0.15s;-webkit-appearance:none;appearance:none}
+.modal-btn.active-folder{background:var(--green-bg);border-color:var(--green-bdr);color:var(--green)}.modal-btn.active-folder:hover{background:rgba(62,207,142,.18)}
+
+/* ── Ranking set tiles ── */
+.set-list{display:flex;flex-direction:column;gap:6px}
+.set-tile{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .15s}
+.set-tile.active-set{border-color:var(--accent)}
+.set-tile-load{flex:1;padding:10px 12px;cursor:pointer;background:transparent;border:none;color:var(--text);font-family:var(--font);font-size:13px;font-weight:500;text-align:left;min-width:0}
+.set-tile-load:hover{color:var(--accent)}
+.set-tile-meta{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+.set-tile-edit{padding:10px 12px;background:transparent;border:none;border-left:1px solid var(--border);color:var(--text3);cursor:pointer;font-size:13px;flex-shrink:0;transition:background .15s,color .15s}
+.set-tile-edit:hover{background:var(--bg4);color:var(--text)}
+.add-set-tile{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--green-bg);border:1px solid var(--green-bdr);border-radius:var(--radius);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;color:var(--green);transition:background .15s;width:100%}
+.add-set-tile:hover{background:rgba(62,207,142,.18)}.add-set-tile:active{transform:scale(.98)}
+.add-icon{width:22px;height:22px;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;flex-shrink:0}
+
+/* ── Filter builder ── */
+.filter-rule{display:flex;flex-direction:column;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px}
+.filter-rule-header{display:flex;align-items:center;justify-content:space-between}
+.filter-rule-label{font-size:12px;color:var(--text2);font-weight:500}
+.rm-rule-btn{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 4px}
+.rm-rule-btn:hover{color:var(--red)}
+.multi-select-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:6px 0}
+.ms-pill{padding:4px 10px;border-radius:99px;font-size:12px;cursor:pointer;border:1px solid var(--border2);background:var(--bg4);color:var(--text2);transition:background .12s,color .12s,border-color .12s;user-select:none}
+.ms-pill.selected{background:var(--accent2);border-color:var(--accent);color:#fff}
+.add-filter-btn{padding:7px 12px;background:transparent;border:1px dashed var(--border2);color:var(--text3);border-radius:var(--radius);cursor:pointer;font-family:var(--font);font-size:12px;transition:border-color .15s,color .15s}
+.add-filter-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+input[type=text],input[type=number],select{width:100%;padding:9px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none}
 input:focus,select:focus{border-color:var(--accent)}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239898a8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
 .tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;background:var(--bg4);color:var(--text2);font-family:var(--mono)}
+.modal-btn.amber-outline{border-color:var(--amber-bdr);color:var(--amber)}.modal-btn.amber-outline:hover{background:var(--amber-bg)}
 .warn-note{padding:8px 12px;background:var(--amber-bg);border:1px solid var(--amber-bdr);color:var(--amber);border-radius:var(--radius);font-size:12px;line-height:1.5}
-.import-area{border:1px dashed var(--border2);border-radius:var(--radius);padding:20px;text-align:center;color:var(--text3);font-size:13px;cursor:pointer;transition:border-color 0.15s,background 0.15s;display:block}
-.import-area:hover{border-color:var(--accent);background:var(--blue-bg);color:var(--accent)}
+.import-area{border:1px dashed var(--border2);border-radius:var(--radius);padding:20px;text-align:center;color:var(--text3);font-size:13px;cursor:pointer;transition:border-color .15s,background .15s;display:block}
+.import-area:hover{border-color:var(--accent);background:rgba(108,143,255,.05);color:var(--accent)}
 .status-msg{padding:8px 12px;border-radius:var(--radius);font-size:12px;line-height:1.5}
 .status-msg.ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bdr)}
 .status-msg.err{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bdr)}
 .status-msg.warn{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bdr)}
 .folder-badge{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--green-bg);border:1px solid var(--green-bdr);border-radius:var(--radius);font-size:12px;color:var(--green)}
-.folder-badge svg{flex-shrink:0;stroke:var(--green)}
 .rankings-table{width:100%;border-collapse:collapse;font-size:13px}
-.rankings-table th{text-align:left;padding:7px 10px;color:var(--text3);font-size:11px;letter-spacing:0.5px;text-transform:uppercase;font-weight:500;border-bottom:1px solid var(--border)}
+.rankings-table th{text-align:left;padding:7px 10px;color:var(--text3);font-size:11px;letter-spacing:.5px;text-transform:uppercase;font-weight:500;border-bottom:1px solid var(--border)}
 .rankings-table td{padding:7px 10px;border-bottom:1px solid var(--border)}
 .rankings-table tr:last-child td{border-bottom:none}
 .rankings-table tbody tr:hover{background:var(--bg3)}
@@ -98,10 +136,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .field-toggle{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;color:var(--text2)}
 .field-toggle input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
-@media(max-width:480px){
+@media(max-width:520px){
   .main{padding:10px;gap:10px}.cards-row{gap:8px}
   .card-name{font-size:13px;padding:8px 6px 6px}.sv-label{font-size:9px}
-  .tb-btn{padding:7px 10px;font-size:12px}.win-btn,.tie-btn{padding:12px 8px;font-size:13px}
+  .tb-btn{padding:7px 10px;font-size:12px}
+  .win-btn{padding:9px 2px;font-size:10px}.tie-btn{padding:10px;font-size:12px}
   .overlay{padding:20px 12px}
 }
 </style>
@@ -113,7 +152,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <button class="title-btn" id="btn-title">— no set —</button>
     <button class="tb-btn" id="btn-skip">Skip</button>
   </div>
-  <div class="main" id="main">
+  <div class="main">
     <div class="empty-state" id="empty-state">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#5a5a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>
       <h1>Card Elo Ranker</h1>
@@ -124,11 +163,19 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="cards-row" id="cards-row"></div>
       <div id="stats-wrap"></div>
       <div class="bottom-btns">
-        <button class="tie-btn" id="btn-tie">Tie</button>
-        <div class="win-btns">
-          <button class="win-btn" id="btn-left-win">Left wins</button>
-          <button class="win-btn" id="btn-right-win">Right wins</button>
+        <div class="win-grid-labels">
+          <div class="win-grid-label">&#8592; Left wins</div>
+          <div class="win-grid-label">Right wins &#8594;</div>
         </div>
+        <div class="win-grid">
+          <button class="win-btn btn-dl" data-outcome="decisive-left">Decisive</button>
+          <button class="win-btn btn-l"  data-outcome="left">Standard</button>
+          <button class="win-btn btn-sl" data-outcome="slight-left">Slight</button>
+          <button class="win-btn btn-sr" data-outcome="slight-right">Slight</button>
+          <button class="win-btn btn-r"  data-outcome="right">Standard</button>
+          <button class="win-btn btn-dr" data-outcome="decisive-right">Decisive</button>
+        </div>
+        <button class="tie-btn" id="btn-tie">Tie</button>
       </div>
       <div class="progress-wrap">
         <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
@@ -149,12 +196,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 <script>
 const SYSTEM_FIELDS=new Set(['id','name','image_filename','url','image_url','_id']);
 const IMG_EXTS=['jpg','jpeg','png','webp','gif'];
+const OUTCOME_SCORES={'decisive-left':[1.00,0.00],'left':[0.75,0.25],'slight-left':[0.60,0.40],'tie':[0.50,0.50],'slight-right':[0.40,0.60],'right':[0.25,0.75],'decisive-right':[0.00,1.00],'skip':null};
 
-// localFiles: Map of lowercase filename -> object URL
-let localFiles=new Map();
-let localFolderName='';
-
+let localFiles=new Map(), localFolderName='';
 let state={cards:[],csvHeaders:[],imageBase:'',rankSets:{},activeSetId:null};
+// filterRules per rankSet: [{field, values:[]}]
 
 const $=id=>document.getElementById(id);
 function genId(){return 'rs_'+Date.now()+'_'+Math.random().toString(36).slice(2,6)}
@@ -163,88 +209,64 @@ function displayFields(){return(state.csvHeaders||[]).filter(h=>!SYSTEM_FIELDS.h
 function safeFields(){try{return displayFields()}catch(e){return[]}}
 function esc(s){return s==null?'':String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
-// ── Local folder loading ──
+// ── Local folder ──
 function handleFolderInput(files){
-  // Revoke old object URLs to free memory
-  localFiles.forEach(url=>URL.revokeObjectURL(url));
-  localFiles=new Map();
-  let count=0;
-  for(const file of files){
-    if(!file.type.startsWith('image/')) continue;
-    // Store by lowercase filename for case-insensitive matching
-    const key=file.name.toLowerCase();
-    localFiles.set(key,URL.createObjectURL(file));
-    count++;
-  }
+  localFiles.forEach(u=>URL.revokeObjectURL(u)); localFiles=new Map(); let count=0;
+  for(const f of files){ if(!f.type.startsWith('image/')) continue; localFiles.set(f.name.toLowerCase(),URL.createObjectURL(f)); count++; }
   localFolderName=count>0?(files[0].webkitRelativePath||'').split('/')[0]||'Local folder':'';
   return count;
 }
-
-// Try to find a local file for a card, trying multiple filename patterns
 function findLocalImage(c){
   if(!localFiles.size) return null;
-
-  // 1. Exact match on image_filename or url field
-  for(const f of ['image_filename','url','image_url']){
-    const v=(c[f]||'').trim();
-    if(!v) continue;
-    // Strip any path prefix — just use the basename
-    const basename=v.split('/').pop().toLowerCase();
-    if(localFiles.has(basename)) return localFiles.get(basename);
+  for(const f of['image_filename','url','image_url']){
+    const v=(c[f]||'').trim(); if(!v) continue;
+    const bn=v.split('/').pop().toLowerCase(); if(localFiles.has(bn)) return localFiles.get(bn);
   }
-
-  // 2. Try id_name pattern with each extension
-  const namePart=(c.name||'').replace(/\s+/g,'_');
-  const stem=((c._id||c.id||'')+'_'+namePart).toLowerCase();
-  for(const ext of IMG_EXTS){
-    const key=stem+'.'+ext;
-    if(localFiles.has(key)) return localFiles.get(key);
-  }
-
-  // 3. Try just the name with each extension
-  const nameOnly=namePart.toLowerCase();
-  for(const ext of IMG_EXTS){
-    const key=nameOnly+'.'+ext;
-    if(localFiles.has(key)) return localFiles.get(key);
-  }
-
+  const np=(c.name||'').replace(/\s+/g,'_');
+  const stem=((c._id||c.id||'')+'_'+np).toLowerCase();
+  for(const e of IMG_EXTS){if(localFiles.has(stem+'.'+e)) return localFiles.get(stem+'.'+e)}
+  const no=np.toLowerCase();
+  for(const e of IMG_EXTS){if(localFiles.has(no+'.'+e)) return localFiles.get(no+'.'+e)}
   return null;
 }
 
-// ── Elo / ranking logic ──
-function calcElo(rA,rB,outcome,K){
-  const ea=1/(1+Math.pow(10,(rB-rA)/400));
-  const sA=outcome==='left'?1:outcome==='right'?0:0.5;
-  return[rA+K*(sA-ea),rB+K*((1-sA)-(1-ea))];
-}
+// ── Filter logic (multi-rule, multi-value) ──
 function getEligible(rs){
   if(!rs||!state.cards.length) return[];
-  if(!rs.filterField||!rs.filterValue) return state.cards.map(c=>c._id);
-  return state.cards.filter(c=>String(c[rs.filterField])===String(rs.filterValue)).map(c=>c._id);
+  const rules=(rs.filterRules||[]).filter(r=>r.field&&r.values&&r.values.length>0);
+  if(!rules.length) return state.cards.map(c=>c._id);
+  return state.cards.filter(c=>rules.every(r=>r.values.includes(String(c[r.field])))).map(c=>c._id);
+}
+
+// ── Elo ──
+function calcElo(rA,rB,sA,K){
+  const ea=1/(1+Math.pow(10,(rB-rA)/400));
+  return[rA+K*(sA-ea), rB+K*((1-sA)-(1-ea))];
 }
 function rebuild(rs){
   if(!rs) return;
   const eligible=getEligible(rs);
-  const ratings={};eligible.forEach(id=>{ratings[id]=Number(rs.baseElo)||1500});
+  const ratings={}; eligible.forEach(id=>{ratings[id]=Number(rs.baseElo)||1500});
   const pc={},sc={};
   (rs.history||[]).forEach(h=>{
     const k=[h.left,h.right].sort().join('||');
     if(h.outcome==='skip'){sc[k]=(sc[k]||0)+1}
     else{
       pc[k]=(pc[k]||0)+1;
-      if(ratings[h.left]!==undefined&&ratings[h.right]!==undefined){
-        const[nL,nR]=calcElo(ratings[h.left],ratings[h.right],h.outcome,Number(rs.kFactor)||24);
-        ratings[h.left]=nL;ratings[h.right]=nR;
+      const scores=OUTCOME_SCORES[h.outcome];
+      if(scores&&ratings[h.left]!==undefined&&ratings[h.right]!==undefined){
+        const[nL,nR]=calcElo(ratings[h.left],ratings[h.right],scores[0],Number(rs.kFactor)||24);
+        ratings[h.left]=nL; ratings[h.right]=nR;
       }
     }
   });
-  rs.ratings=ratings;rs.pairCounts=pc;rs.skipCounts=sc;
+  rs.ratings=ratings; rs.pairCounts=pc; rs.skipCounts=sc;
 }
 function nextMatch(rs){
-  const el=getEligible(rs);if(el.length<2) return null;
+  const el=getEligible(rs); if(el.length<2) return null;
   const pc=rs.pairCounts||{},sc=rs.skipCounts||{};
   const pairs=[];
-  for(let i=0;i<el.length;i++)for(let j=i+1;j<el.length;j++){
+  for(let i=0;i<el.length;i++) for(let j=i+1;j<el.length;j++){
     const k=[el[i],el[j]].sort().join('||');
     if((sc[k]||0)>=2) continue;
     pairs.push({a:el[i],b:el[j],seen:pc[k]||0,skips:sc[k]||0});
@@ -252,14 +274,14 @@ function nextMatch(rs){
   if(!pairs.length) return null;
   const unseen=pairs.filter(p=>p.seen===0&&p.skips===0);
   const pool=unseen.length?unseen:pairs;
-  const mc={};el.forEach(id=>{mc[id]=(rs.history||[]).filter(h=>h.left===id||h.right===id).length});
+  const mc={}; el.forEach(id=>{mc[id]=(rs.history||[]).filter(h=>h.left===id||h.right===id).length});
   pool.sort((a,b)=>((mc[a.a]||0)+(mc[a.b]||0))-((mc[b.a]||0)+(mc[b.b]||0)));
   return[pool[0].a,pool[0].b];
 }
 function progress(rs){
-  const el=getEligible(rs);if(el.length<2) return{pct:0,label:'No eligible cards'};
-  let total=0,seen=0;const pc=rs.pairCounts||{},sc=rs.skipCounts||{};
-  for(let i=0;i<el.length;i++)for(let j=i+1;j<el.length;j++){
+  const el=getEligible(rs); if(el.length<2) return{pct:0,label:'No eligible cards'};
+  let total=0,seen=0; const pc=rs.pairCounts||{},sc=rs.skipCounts||{};
+  for(let i=0;i<el.length;i++) for(let j=i+1;j<el.length;j++){
     total++;
     const k=[el[i],el[j]].sort().join('||');
     if((pc[k]||0)+(sc[k]||0)>0) seen++;
@@ -269,15 +291,11 @@ function progress(rs){
 }
 function cardById(id){return state.cards.find(c=>c._id===id)||null}
 
-// ── Image resolution: local first, then URL fallback ──
+// ── Image resolution ──
 function resolveUrls(c){
-  // Try local folder first
-  const local=findLocalImage(c);
-  if(local) return[local];
-
-  // Fall back to URL-based resolution
+  const local=findLocalImage(c); if(local) return[local];
   for(const f of['image_filename','url','image_url','URL','image_URL']){
-    const v=(c[f]||'').trim();if(!v) continue;
+    const v=(c[f]||'').trim(); if(!v) continue;
     if(/^https?:\/\//i.test(v)) return[v];
     if(state.imageBase) return[state.imageBase.replace(/\/$/,'')+'/'+v];
     return[v];
@@ -289,220 +307,160 @@ function resolveUrls(c){
   }
   return[];
 }
-
 window._tryNext=function(img){
   let urls=[],idx=999;
   try{urls=JSON.parse(img.dataset.urls||'[]');idx=parseInt(img.dataset.idx||'0')+1}catch(e){}
   if(idx<urls.length){img.src=urls[idx];img.dataset.idx=String(idx)}
-  else{
-    img.style.display='none';
-    const ph=document.createElement('div');ph.className='card-img-placeholder';
-    ph.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>No image</span>`;
-    img.parentNode.appendChild(ph);
-  }
+  else{img.style.display='none';const ph=document.createElement('div');ph.className='card-img-placeholder';ph.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>No image</span>`;img.parentNode.appendChild(ph)}
 };
-
 function makeImgEl(c){
   const urls=resolveUrls(c);
-  if(!urls.length){
-    const d=document.createElement('div');d.className='card-img-placeholder';
-    d.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>No image</span>`;
-    return d;
-  }
-  const img=document.createElement('img');
-  img.src=urls[0];img.alt=c.name||c._id||'';
-  // Only set fallback chain for non-local URLs (object URLs don't need fallback)
-  if(urls.length>1||!urls[0].startsWith('blob:')){
-    img.dataset.urls=JSON.stringify(urls);img.dataset.idx='0';
-    img.onerror=function(){window._tryNext(this)};
-  }
+  if(!urls.length){const d=document.createElement('div');d.className='card-img-placeholder';d.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>No image</span>`;return d}
+  const img=document.createElement('img'); img.src=urls[0]; img.alt=c.name||c._id||'';
+  if(urls.length>1||!urls[0].startsWith('blob:')){img.dataset.urls=JSON.stringify(urls);img.dataset.idx='0';img.onerror=function(){window._tryNext(this)}}
   return img;
 }
 
-// ── Render ──
+// ── Render main ──
 let currentMatch=null;
 function getVisFields(rs){
   const all=safeFields();
   if(!rs||!rs.visibleFields||!rs.visibleFields.length) return all.slice(0,7);
   return rs.visibleFields.filter(f=>all.includes(f));
 }
-
 function renderMain(){
   const rs=getSet();
   const comp=$('comparison-area'),emp=$('empty-state'),nom=$('no-match-area');
-  if(!rs||!state.cards.length){
-    emp.style.display='';comp.style.display='none';nom.style.display='none';
-    $('btn-title').textContent='— no set —';return;
-  }
+  if(!rs||!state.cards.length){emp.style.display='';comp.style.display='none';nom.style.display='none';$('btn-title').textContent='— no set —';return}
   rebuild(rs);
   const match=nextMatch(rs);
   $('btn-title').textContent=rs.name||'Unnamed set';
-  if(!match){
-    emp.style.display='none';comp.style.display='none';nom.style.display='';
-    nom.style.flexDirection='column';return;
-  }
-  currentMatch=match;
-  emp.style.display='none';nom.style.display='none';comp.style.display='flex';
-
+  if(!match){emp.style.display='none';comp.style.display='none';nom.style.display='';nom.style.flexDirection='column';return}
+  currentMatch=match; emp.style.display='none'; nom.style.display='none'; comp.style.display='flex';
   const[lId,rId]=match;
-  const lc=cardById(lId)||{_id:lId,name:lId};
-  const rc=cardById(rId)||{_id:rId,name:rId};
+  const lc=cardById(lId)||{_id:lId,name:lId},rc=cardById(rId)||{_id:rId,name:rId};
   const lElo=Math.round((rs.ratings&&rs.ratings[lId])||rs.baseElo||1500);
   const rElo=Math.round((rs.ratings&&rs.ratings[rId])||rs.baseElo||1500);
-
-  const row=$('cards-row');row.innerHTML='';
+  const row=$('cards-row'); row.innerHTML='';
   [['left',lc,lElo],['right',rc,rElo]].forEach(([side,card,elo])=>{
-    const panel=document.createElement('div');panel.className='card-top';panel.id='card-panel-'+side;
-    const nm=document.createElement('div');nm.className='card-name';nm.textContent=card.name||card._id||'';
-    const wrap=document.createElement('div');wrap.className='card-img-wrap';
-    wrap.onclick=()=>submitResult(side);
+    const panel=document.createElement('div'); panel.className='card-top'; panel.id='card-panel-'+side;
+    const nm=document.createElement('div'); nm.className='card-name'; nm.textContent=card.name||card._id||'';
+    const wrap=document.createElement('div'); wrap.className='card-img-wrap';
+    wrap.onclick=()=>submitResult(side==='left'?'left':'right');
     wrap.appendChild(makeImgEl(card));
-    const eloDiv=document.createElement('div');eloDiv.className='card-elo';eloDiv.textContent='Elo: '+elo;
-    panel.appendChild(nm);panel.appendChild(wrap);panel.appendChild(eloDiv);
-    row.appendChild(panel);
+    const eloDiv=document.createElement('div'); eloDiv.className='card-elo'; eloDiv.textContent='Elo: '+elo;
+    panel.appendChild(nm); panel.appendChild(wrap); panel.appendChild(eloDiv); row.appendChild(panel);
   });
-
-  const vis=getVisFields(rs);
-  const isEmpty=v=>v===undefined||v===''||v===null||String(v).trim()==='None';
-  const sw=$('stats-wrap');sw.innerHTML='';
-  let hasStats=false;
-  const sp=document.createElement('div');sp.className='stats-panel';
+  const vis=getVisFields(rs); const isEmpty=v=>v===undefined||v===''||v===null||String(v).trim()==='None';
+  const sw=$('stats-wrap'); sw.innerHTML=''; let hasStats=false;
+  const sp=document.createElement('div'); sp.className='stats-panel';
   vis.forEach(f=>{
-    const lv=lc[f],rv=rc[f];
-    if(isEmpty(lv)&&isEmpty(rv)) return;
-    hasStats=true;
-    const r=document.createElement('div');r.className='stats-row';
-    const l=document.createElement('div');l.className='sv-left';l.textContent=isEmpty(lv)?'—':lv;
-    const lb=document.createElement('div');lb.className='sv-label';lb.textContent=f;
-    const rv2=document.createElement('div');rv2.className='sv-right';rv2.textContent=isEmpty(rv)?'—':rv;
-    r.appendChild(l);r.appendChild(lb);r.appendChild(rv2);sp.appendChild(r);
+    const lv=lc[f],rv=rc[f]; if(isEmpty(lv)&&isEmpty(rv)) return; hasStats=true;
+    const r=document.createElement('div'); r.className='stats-row';
+    const l=document.createElement('div'); l.className='sv-left'; l.textContent=isEmpty(lv)?'—':lv;
+    const lb=document.createElement('div'); lb.className='sv-label'; lb.textContent=f;
+    const rv2=document.createElement('div'); rv2.className='sv-right'; rv2.textContent=isEmpty(rv)?'—':rv;
+    r.appendChild(l); r.appendChild(lb); r.appendChild(rv2); sp.appendChild(r);
   });
   if(hasStats) sw.appendChild(sp);
-
-  const prog=progress(rs);
-  $('prog-fill').style.width=prog.pct+'%';
-  $('prog-label').textContent=prog.label;
+  const prog=progress(rs); $('prog-fill').style.width=prog.pct+'%'; $('prog-label').textContent=prog.label;
 }
 
 function submitResult(outcome){
-  const rs=getSet();if(!rs||!currentMatch) return;
+  const rs=getSet(); if(!rs||!currentMatch) return;
   rs.history=rs.history||[];
   rs.history.push({left:currentMatch[0],right:currentMatch[1],outcome,ts:Date.now()});
-  if(outcome==='left'||outcome==='right'){
-    const el=$('card-panel-'+outcome);
-    if(el) el.classList.add('flash');
-  }
+  const winSide=outcome.includes('left')?'left':outcome.includes('right')?'right':null;
+  if(winSide){const el=$('card-panel-'+winSide);if(el) el.classList.add('flash')}
   setTimeout(renderMain,180);
 }
 
-$('btn-left-win').onclick=()=>submitResult('left');
-$('btn-right-win').onclick=()=>submitResult('right');
+document.querySelectorAll('.win-btn[data-outcome]').forEach(btn=>{btn.onclick=()=>submitResult(btn.dataset.outcome)});
 $('btn-tie').onclick=()=>submitResult('tie');
-$('btn-skip').onclick=()=>{
-  const rs=getSet();if(!rs||!currentMatch) return;
-  rs.history=rs.history||[];
-  rs.history.push({left:currentMatch[0],right:currentMatch[1],outcome:'skip',ts:Date.now()});
-  renderMain();
-};
-$('btn-undo').onclick=()=>{
-  const rs=getSet();if(!rs||!(rs.history||[]).length) return;
-  rs.history.pop();renderMain();
-};
+$('btn-undo').onclick=()=>{const rs=getSet();if(!rs||!(rs.history||[]).length) return;rs.history.pop();renderMain()};
+$('btn-skip').onclick=()=>{const rs=getSet();if(!rs||!currentMatch) return;rs.history=rs.history||[];rs.history.push({left:currentMatch[0],right:currentMatch[1],outcome:'skip',ts:Date.now()});renderMain()};
 $('btn-title').onclick=()=>showView('main');
 $('btn-open-main').onclick=()=>showView('main');
 $('btn-open-nomatch').onclick=()=>{showView('main');setTimeout(()=>showView('rankings'),50)};
 
 // ── Modal system ──
-function showView(v){
+function showView(v, extra){
   $('overlay').classList.add('open');
   const mc=$('modal');
   try{
-    const builders={main:vMain,rankings:vRankings,newset:vNewSet,loadset:vLoadSet,settings:vSettings,'import-csv':vImportCSV,fields:vFields};
+    const builders={main:vMain,rankings:vRankings,manage:vManage,newset:vNewSet,editset:()=>vEditSet(extra),'import-csv':vImportCSV,fields:vFields,images:vImages,saveload:vSaveLoad};
     mc.innerHTML=(builders[v]||vMain)();
   }catch(err){
     mc.innerHTML=`<div class="modal-header"><span class="modal-title">Error</span><button class="close-btn" data-a="close">&times;</button></div><div class="status-msg err">${esc(err.message)}</div>`;
   }
-  mc.querySelectorAll('[data-a]').forEach(el=>{el.onclick=e=>{e.stopPropagation();handleAction(el.dataset.a,el)}});
-  // File input wiring
-  const cf=mc.querySelector('#csv-file');if(cf) cf.onchange=()=>{if(cf.files[0]) handleCSV(cf.files[0])};
-  const jf=mc.querySelector('#json-file');if(jf) jf.onchange=()=>{if(jf.files[0]) handleJSON(jf.files[0])};
-  const folderInput=mc.querySelector('#folder-input');
-  if(folderInput) folderInput.onchange=()=>{
-    const count=handleFolderInput(folderInput.files);
-    if(count>0){
-      toast(`Loaded ${count} images from "${localFolderName}"`, 'ok');
-      // Refresh the menu to show the active folder badge
-      setTimeout(()=>showView('main'),400);
-    } else {
-      toast('No image files found in that folder','warn');
-    }
-    renderMain();
-  };
-  // Filter value dynamic dropdowns
-  const ff=mc.querySelector('#ns-ff');if(ff) ff.onchange=()=>updateFV('ns');
-  const sff=mc.querySelector('#s-ff');if(sff) sff.onchange=()=>updateFV('s');
+  bindModal();
 }
-
 function closeModal(){$('overlay').classList.remove('open');renderMain()}
 $('overlay').onclick=e=>{if(e.target===$('overlay')) closeModal()};
 
-function mHeader(title){
-  return`<div class="modal-header"><span class="modal-title">${esc(title)}</span><button class="close-btn" data-a="close">&times;</button></div>`;
+function bindModal(){
+  const mc=$('modal');
+  mc.querySelectorAll('[data-a]').forEach(el=>{el.onclick=e=>{e.stopPropagation();handleAction(el.dataset.a,el)}});
+  const cf=mc.querySelector('#csv-file'); if(cf) cf.onchange=()=>{if(cf.files[0]) handleCSV(cf.files[0])};
+  const jf=mc.querySelector('#json-file'); if(jf) jf.onchange=()=>{if(jf.files[0]) handleJSON(jf.files[0])};
+  const fi=mc.querySelector('#folder-input');
+  if(fi) fi.onchange=()=>{
+    const count=handleFolderInput(fi.files);
+    if(count>0){toast(`Loaded ${count} images from "${localFolderName}"`,'ok');setTimeout(()=>showView('images'),400)}
+    else toast('No image files found','warn');
+    renderMain();
+  };
+  // Multi-select pills
+  mc.querySelectorAll('.ms-pill').forEach(pill=>{
+    pill.onclick=()=>{pill.classList.toggle('selected');syncFilterRuleFromPills(pill.closest('.filter-rule'))};
+  });
+  // Filter field selects
+  mc.querySelectorAll('.filter-field-select').forEach(sel=>{
+    sel.onchange=()=>rebuildFilterRule(sel.closest('.filter-rule'));
+  });
 }
 
-// ── View builders ──
+function mHeader(title, backView){
+  const backBtn=backView?`<button class="back-btn" data-a="back-${backView}">&#8592; Back</button>`:'';
+  return`<div class="modal-header">${backBtn}<span class="modal-title">${esc(title)}</span><button class="close-btn" data-a="close">&times;</button></div>`;
+}
+
+// ── View: Main menu ──
 function vMain(){
   const rs=getSet();
   const loaded=state.cards.length>0;
-  const folderActive=localFiles.size>0;
-  const folderBadge=folderActive
-    ?`<div class="folder-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>${esc(localFolderName)} &mdash; ${localFiles.size} images loaded</div>`
-    :'';
   return mHeader(rs?rs.name:'Card Elo Ranker')
     +(!loaded?`<div class="warn-note">Import cards first before creating a ranking set</div>`:'')
-    +folderBadge
     +`<div class="modal-section">
       <button class="modal-btn" data-a="v-rankings">View rankings</button>
-      <button class="modal-btn" data-a="v-newset">Create new ranking set</button>
-      <button class="modal-btn" data-a="v-loadset">Load ranking set</button>
-      <button class="modal-btn" data-a="v-settings">Settings &amp; filter</button>
+      <button class="modal-btn" data-a="v-manage">Manage ranking sets</button>
       <button class="modal-btn" data-a="v-fields">Toggle visible fields</button>
     </div>
     <hr class="modal-divider">
     <div class="modal-section">
-      <div class="modal-label">Images</div>
-      <label class="modal-btn ${folderActive?'active-folder':''}" style="cursor:pointer">
-        ${folderActive?'&#10003; Change image folder':'&#128193; Load image folder (local)'}
-        <input type="file" id="folder-input" webkitdirectory multiple accept="image/*" style="display:none">
-      </label>
-      <div style="font-size:11px;color:var(--text3);line-height:1.6">Local images take priority over URLs. You'll need to reload the folder each session.</div>
-      <div class="modal-label" style="margin-top:4px">Image base URL (fallback if no local folder)</div>
-      <input type="text" id="img-base" placeholder="https://raw.githubusercontent.com/..." value="${esc(state.imageBase||'')}">
-      <button class="modal-btn" data-a="save-base">Save image URL</button>
+      <button class="modal-btn${!loaded?' amber-outline':''}" data-a="v-import-csv">Import cards from CSV</button>
+      <button class="modal-btn" data-a="v-images">Image settings</button>
     </div>
     <hr class="modal-divider">
     <div class="modal-section">
-      <button class="modal-btn" data-a="v-import-csv">Import cards from CSV</button>
-    </div>
-    <hr class="modal-divider">
-    <div class="modal-section">
-      <button class="modal-btn" data-a="exp-csv">Export CSV</button>
-      <button class="modal-btn" data-a="exp-json">Export JSON save point</button>
-      <button class="modal-btn" data-a="imp-json">Import JSON save point</button>
-      <input type="file" id="json-file" accept=".json" style="display:none">
+      <button class="modal-btn" data-a="v-saveload">Save &amp; load</button>
     </div>`;
 }
 
+// ── View: Rankings ──
 function vRankings(){
   const rs=getSet();
-  if(!rs) return mHeader('Rankings')+`<p style="color:var(--text2);font-size:13px">No active ranking set</p>`;
+  if(!rs) return mHeader('Rankings','main')+`<p style="color:var(--text2);font-size:13px">No active ranking set</p>`;
   rebuild(rs);
   const el=getEligible(rs);
-  const rows=el.map(id=>{const c=cardById(id);return{name:c?c.name||id:id,elo:(rs.ratings&&rs.ratings[id])||rs.baseElo||1500}});
+  // Always compute elo rank
+  const withElo=el.map(id=>{const c=cardById(id);return{id,name:c?c.name||id:id,elo:(rs.ratings&&rs.ratings[id])||rs.baseElo||1500}});
+  withElo.sort((a,b)=>b.elo-a.elo);
+  const eloRank={}; withElo.forEach((r,i)=>{eloRank[r.id]=i+1});
   const sk=window._rSort||'elo';
-  if(sk==='elo') rows.sort((a,b)=>b.elo-a.elo);else rows.sort((a,b)=>a.name.localeCompare(b.name));
-  const tbody=rows.map((r,i)=>`<tr><td class="rank-num">${sk==='elo'?i+1:'—'}</td><td>${esc(r.name)}</td><td class="elo-val">${Math.round(r.elo)}</td></tr>`).join('');
-  return mHeader('Rankings — '+rs.name)
+  if(sk==='name') withElo.sort((a,b)=>a.name.localeCompare(b.name));
+  const tbody=withElo.map(r=>`<tr><td class="rank-num">${eloRank[r.id]}</td><td>${esc(r.name)}</td><td class="elo-val">${Math.round(r.elo)}</td></tr>`).join('');
+  return mHeader('Rankings — '+rs.name,'main')
     +`<div style="display:flex;gap:8px">
       <button class="modal-btn" data-a="sort-elo" style="flex:1">By Elo</button>
       <button class="modal-btn" data-a="sort-name" style="flex:1">By Name</button>
@@ -514,73 +472,122 @@ function vRankings(){
     </table></div>`;
 }
 
-function filterOptsHtml(selectedField,prefix){
-  const fields=safeFields();
-  return`<select id="${prefix}-ff"><option value="">All cards (${state.cards.length} loaded)</option>`
-    +fields.map(f=>`<option value="${esc(f)}"${selectedField===f?' selected':''}>${esc(f)}</option>`).join('')+'</select>';
-}
-function filterValOptsHtml(prefix,field,selectedVal){
-  if(!field||!state.cards.length) return`<input type="text" id="${prefix}-fv" placeholder="e.g. Ferrari" value="${esc(selectedVal||'')}">`;
-  const vals=[...new Set(state.cards.map(c=>c[field]).filter(v=>v!==undefined&&v!==''))].sort();
-  return`<select id="${prefix}-fv"><option value="">-- select --</option>`
-    +vals.map(v=>`<option value="${esc(v)}"${selectedVal===String(v)?' selected':''}>${esc(v)}</option>`).join('')+'</select>';
-}
-function updateFV(prefix){
-  const ff=document.getElementById(prefix+'-ff');
-  const wrap=document.getElementById(prefix+'-fv-wrap');
-  if(!ff||!wrap) return;
-  wrap.innerHTML=filterValOptsHtml(prefix,ff.value,'');
+// ── View: Manage ranking sets ──
+function vManage(){
+  const sets=Object.values(state.rankSets);
+  const tiles=sets.map(rs=>{
+    const count=getEligible(rs).length;
+    const isActive=rs.id===state.activeSetId;
+    return`<div class="set-tile${isActive?' active-set':''}">
+      <button class="set-tile-load" data-a="load-set" data-id="${esc(rs.id)}">
+        ${esc(rs.name||'Unnamed')}
+        <div class="set-tile-meta">${count} cards${isActive?' &middot; active':''}</div>
+      </button>
+      <button class="set-tile-edit" data-a="edit-set" data-id="${esc(rs.id)}" title="Edit">&#9998;</button>
+    </div>`;
+  }).join('');
+  return mHeader('Manage ranking sets','main')
+    +`<p style="font-size:12px;color:var(--text3)">Tap a set name to load it as active</p>
+    <div class="set-list">
+      <button class="add-set-tile" data-a="v-newset">
+        <div class="add-icon">+</div>
+        Add new ranking set
+      </button>
+      ${tiles||'<p style="font-size:13px;color:var(--text3);text-align:center;padding:12px">No ranking sets yet</p>'}
+    </div>`;
 }
 
+// ── View: Edit a ranking set ──
+function vEditSet(rsId){
+  const rs=state.rankSets[rsId]; if(!rs) return vManage();
+  const fields=safeFields();
+  const rules=(rs.filterRules||[]);
+  const rulesHtml=rules.map((rule,i)=>buildRuleHtml(rule,i,fields)).join('');
+  return mHeader('Edit: '+rs.name,'manage')
+    +`<div class="modal-section">
+      <div class="modal-label">Name</div>
+      <input type="text" id="s-name" value="${esc(rs.name||'')}">
+      <div class="modal-label">Base Elo</div>
+      <input type="number" id="s-elo" value="${rs.baseElo||1500}">
+      <div class="modal-label">K-factor</div>
+      <input type="number" id="s-k" value="${rs.kFactor||24}">
+      <div class="modal-label">Filter rules <span style="font-weight:400;color:var(--text3)">(all rules must match)</span></div>
+      <div id="filter-rules-wrap">${rulesHtml}</div>
+      <button class="add-filter-btn" data-a="add-filter-rule" data-rsid="${esc(rsId)}">+ Add filter rule</button>
+      <button class="modal-btn primary" data-a="save-settings" data-rsid="${esc(rsId)}" style="margin-top:4px">Save changes</button>
+      <button class="modal-btn danger" data-a="delete-set" data-rsid="${esc(rsId)}">Delete this ranking set</button>
+    </div>`;
+}
+
+function buildRuleHtml(rule, idx, fields){
+  const fieldOpts=fields.map(f=>`<option value="${esc(f)}"${rule.field===f?' selected':''}>${esc(f)}</option>`).join('');
+  let pillsHtml='';
+  if(rule.field&&state.cards.length){
+    const vals=[...new Set(state.cards.map(c=>c[rule.field]).filter(v=>v!==undefined&&v!==''))].sort();
+    pillsHtml=`<div class="multi-select-wrap">`
+      +vals.map(v=>`<span class="ms-pill${(rule.values||[]).includes(String(v))?' selected':''}" data-val="${esc(v)}">${esc(v)}</span>`).join('')
+      +`</div>`;
+  }
+  return`<div class="filter-rule" data-rule-idx="${idx}">
+    <div class="filter-rule-header">
+      <span class="filter-rule-label">Rule ${idx+1}</span>
+      <button class="rm-rule-btn" data-a="rm-filter-rule" data-idx="${idx}" title="Remove">&#10005;</button>
+    </div>
+    <select class="filter-field-select" data-rule-idx="${idx}">
+      <option value="">Select field…</option>${fieldOpts}
+    </select>
+    ${pillsHtml}
+  </div>`;
+}
+
+function syncFilterRuleFromPills(ruleEl){
+  if(!ruleEl) return;
+  const idx=parseInt(ruleEl.dataset.ruleIdx);
+  const rsId=document.querySelector('[data-rsid]')?.dataset?.rsid;
+  if(!rsId||isNaN(idx)) return;
+  const rs=state.rankSets[rsId]; if(!rs) return;
+  rs.filterRules=rs.filterRules||[];
+  while(rs.filterRules.length<=idx) rs.filterRules.push({field:'',values:[]});
+  rs.filterRules[idx].values=[...ruleEl.querySelectorAll('.ms-pill.selected')].map(p=>p.dataset.val);
+}
+
+function rebuildFilterRule(ruleEl){
+  if(!ruleEl) return;
+  const idx=parseInt(ruleEl.dataset.ruleIdx);
+  const rsId=document.querySelector('[data-rsid]')?.dataset?.rsid;
+  const sel=ruleEl.querySelector('.filter-field-select');
+  if(!rsId||isNaN(idx)||!sel) return;
+  const rs=state.rankSets[rsId]; if(!rs) return;
+  rs.filterRules=rs.filterRules||[];
+  while(rs.filterRules.length<=idx) rs.filterRules.push({field:'',values:[]});
+  rs.filterRules[idx]={field:sel.value,values:[]};
+  const fields=safeFields();
+  ruleEl.innerHTML=buildRuleHtml(rs.filterRules[idx],idx,fields).replace(/^<div[^>]*>/,'').replace(/<\/div>$/,'');
+  // Re-bind pills
+  ruleEl.querySelectorAll('.ms-pill').forEach(pill=>{
+    pill.onclick=()=>{pill.classList.toggle('selected');syncFilterRuleFromPills(ruleEl)};
+  });
+  ruleEl.querySelector('.filter-field-select').onchange=()=>rebuildFilterRule(ruleEl);
+}
+
+// ── View: New ranking set ──
 function vNewSet(){
-  return mHeader('New ranking set')
+  return mHeader('New ranking set','manage')
     +(!state.cards.length?`<div class="warn-note">No cards loaded — import a CSV first</div>`:'')
     +`<div class="modal-section">
-      <div class="modal-label">Name</div><input type="text" id="ns-name" placeholder="My ranking set">
-      <div class="modal-label">Base Elo</div><input type="number" id="ns-elo" value="1500" min="1">
-      <div class="modal-label">K-factor</div><input type="number" id="ns-k" value="24" min="1">
-      <div class="modal-label">Filter field (optional)</div>${filterOptsHtml('','ns')}
-      <div class="modal-label">Filter value</div><div id="ns-fv-wrap">${filterValOptsHtml('ns','','')}</div>
+      <div class="modal-label">Name</div>
+      <input type="text" id="ns-name" placeholder="My ranking set">
+      <div class="modal-label">Base Elo</div>
+      <input type="number" id="ns-elo" value="1500" min="1">
+      <div class="modal-label">K-factor</div>
+      <input type="number" id="ns-k" value="24" min="1">
       <button class="modal-btn primary" data-a="create-set" style="margin-top:4px">Create set</button>
     </div>`;
 }
 
-function vLoadSet(){
-  const sets=Object.values(state.rankSets);
-  if(!sets.length) return mHeader('Load ranking set')+`<p style="color:var(--text2);font-size:13px">No saved ranking sets yet</p>`;
-  return mHeader('Load ranking set')+'<div class="modal-section">'
-    +sets.map(rs=>`<button class="modal-btn" data-a="load-set" data-id="${esc(rs.id)}">${esc(rs.name||'Unnamed')} <span class="tag">${getEligible(rs).length} cards</span></button>`).join('')
-    +'</div>';
-}
-
-function vSettings(){
-  const rs=getSet();
-  if(!rs) return mHeader('Settings')+`<p style="color:var(--text2);font-size:13px">No active set</p>`;
-  return mHeader('Settings')
-    +`<div class="modal-section">
-      <div class="modal-label">Rename</div><input type="text" id="s-name" value="${esc(rs.name||'')}">
-      <div class="modal-label">Base Elo</div><input type="number" id="s-elo" value="${rs.baseElo||1500}">
-      <div class="modal-label">K-factor</div><input type="number" id="s-k" value="${rs.kFactor||24}">
-      <div class="modal-label">Filter field</div>${filterOptsHtml(rs.filterField||'','s')}
-      <div class="modal-label">Filter value</div><div id="s-fv-wrap">${filterValOptsHtml('s',rs.filterField||'',rs.filterValue||'')}</div>
-      <button class="modal-btn primary" data-a="save-settings" style="margin-top:4px">Save settings</button>
-      <button class="modal-btn danger" data-a="delete-set">Delete this ranking set</button>
-    </div>`;
-}
-
-function vFields(){
-  const rs=getSet();const all=safeFields();
-  if(!all.length) return mHeader('Visible fields')+`<div class="warn-note">Import a CSV first</div>`;
-  const vis=getVisFields(rs);
-  return mHeader('Visible fields')
-    +`<p style="font-size:12px;color:var(--text3)">Name is always shown above the image</p>
-    <div class="fields-grid">`
-    +all.map(f=>`<label class="field-toggle"><input type="checkbox" data-field="${esc(f)}" ${vis.includes(f)?'checked':''}><span>${esc(f)}</span></label>`).join('')
-    +`</div><button class="modal-btn primary" data-a="save-fields" style="margin-top:4px">Save</button>`;
-}
-
+// ── View: Import CSV ──
 function vImportCSV(){
-  return mHeader('Import cards from CSV')
+  return mHeader('Import cards from CSV','main')
     +`<div class="modal-section">
       <p style="font-size:12px;color:var(--text3);line-height:1.6">First row = headers. Column names become field labels. Use an <strong style="color:var(--text2)">image_filename</strong> or <strong style="color:var(--text2)">url</strong> column for images.</p>
       <label class="import-area">Tap to choose CSV file<input type="file" accept=".csv" style="display:none" id="csv-file"></label>
@@ -588,142 +595,210 @@ function vImportCSV(){
     </div>`;
 }
 
+// ── View: Visible fields ──
+function vFields(){
+  const rs=getSet(); const all=safeFields();
+  if(!all.length) return mHeader('Visible fields','main')+`<div class="warn-note">Import a CSV first</div>`;
+  const vis=getVisFields(rs);
+  return mHeader('Visible fields','main')
+    +`<p style="font-size:12px;color:var(--text3)">Name is always shown above the image</p>
+    <div class="fields-grid">`
+    +all.map(f=>`<label class="field-toggle"><input type="checkbox" data-field="${esc(f)}" ${vis.includes(f)?'checked':''}><span>${esc(f)}</span></label>`).join('')
+    +`</div><button class="modal-btn primary" data-a="save-fields" style="margin-top:4px">Save</button>`;
+}
+
+// ── View: Image settings ──
+function vImages(){
+  const folderActive=localFiles.size>0;
+  const folderBadge=folderActive?`<div class="folder-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>${esc(localFolderName)} &mdash; ${localFiles.size} images loaded</div>`:'';
+  return mHeader('Image settings','main')
+    +folderBadge
+    +`<div class="modal-section">
+      <div class="modal-label">Local image folder</div>
+      <label class="modal-btn ${folderActive?'active-folder':''}" style="cursor:pointer">
+        ${folderActive?'&#10003; Change image folder':'&#128193; Load image folder'}
+        <input type="file" id="folder-input" webkitdirectory multiple accept="image/*" style="display:none">
+      </label>
+      <p style="font-size:11px;color:var(--text3);line-height:1.6">Local images take priority over URLs. Re-select each session.</p>
+      <div class="modal-label" style="margin-top:4px">Image base URL (fallback)</div>
+      <input type="text" id="img-base" placeholder="https://raw.githubusercontent.com/..." value="${esc(state.imageBase||'')}">
+      <button class="modal-btn" data-a="save-base">Save URL</button>
+    </div>`;
+}
+
+// ── View: Save & load ──
+function vSaveLoad(){
+  return mHeader('Save &amp; load','main')
+    +`<div class="modal-section">
+      <div class="modal-label">Save</div>
+      <button class="modal-btn" data-a="exp-csv">Export rankings CSV</button>
+      <button class="modal-btn" data-a="exp-json">Save current set</button>
+      <button class="modal-btn" data-a="exp-json-all">Save all sets</button>
+      <div class="modal-label" style="margin-top:4px">Load</div>
+      <button class="modal-btn" data-a="imp-json">Load set from JSON</button>
+      <input type="file" id="json-file" accept=".json" style="display:none">
+      <p style="font-size:11px;color:var(--text3);line-height:1.6">JSON files can contain one or multiple sets. All sets in the file will be imported.</p>
+    </div>`;
+}
+
 // ── Action handler ──
 function handleAction(action,el){
   if(action==='close'){closeModal();return}
-  if(action==='v-rankings'){showView('rankings');return}
-  if(action==='v-newset'){showView('newset');return}
-  if(action==='v-loadset'){showView('loadset');return}
-  if(action==='v-settings'){showView('settings');return}
-  if(action==='v-fields'){showView('fields');return}
-  if(action==='v-import-csv'){showView('import-csv');return}
-  if(action==='save-base'){
-    const inp=document.getElementById('img-base');if(inp) state.imageBase=inp.value.trim();
-    toast('Image URL saved','ok');return;
-  }
+  // Back buttons
+  if(action.startsWith('back-')){showView(action.slice(5));return}
+  // View nav
+  const viewMap={'v-rankings':'rankings','v-manage':'manage','v-newset':'newset','v-import-csv':'import-csv','v-fields':'fields','v-images':'images','v-saveload':'saveload'};
+  if(viewMap[action]){showView(viewMap[action]);return}
+
+  if(action==='edit-set'){showView('editset',el.dataset.id);return}
+  if(action==='load-set'){state.activeSetId=el.dataset.id;closeModal();return}
   if(action==='sort-elo'){window._rSort='elo';showView('rankings');return}
   if(action==='sort-name'){window._rSort='name';showView('rankings');return}
+
+  if(action==='save-base'){const inp=document.getElementById('img-base');if(inp) state.imageBase=inp.value.trim();toast('Image URL saved','ok');return}
+
+  if(action==='add-filter-rule'){
+    const rsId=el.dataset.rsid; const rs=state.rankSets[rsId]; if(!rs) return;
+    rs.filterRules=rs.filterRules||[];
+    rs.filterRules.push({field:'',values:[]});
+    showView('editset',rsId); return;
+  }
+  if(action==='rm-filter-rule'){
+    const rsId=document.querySelector('[data-rsid]')?.dataset?.rsid;
+    const rs=rsId&&state.rankSets[rsId]; if(!rs) return;
+    const idx=parseInt(el.dataset.idx);
+    rs.filterRules=(rs.filterRules||[]).filter((_,i)=>i!==idx);
+    showView('editset',rsId); return;
+  }
+
   if(action==='create-set'){
-    const g=id=>document.getElementById(id);
-    const id=genId();const fields=safeFields();
-    const ffEl=g('ns-ff'),fvEl=g('ns-fv');
+    const g=id=>document.getElementById(id); const id=genId(); const fields=safeFields();
     state.rankSets[id]={id,
       name:(g('ns-name')&&g('ns-name').value.trim())||'New set',
       baseElo:Number(g('ns-elo')&&g('ns-elo').value)||1500,
       kFactor:Number(g('ns-k')&&g('ns-k').value)||24,
-      filterField:(ffEl&&ffEl.value)||'',filterValue:(fvEl&&fvEl.value)||'',
+      filterRules:[],
       visibleFields:fields.slice(0,7),history:[],ratings:{},pairCounts:{},skipCounts:{}};
-    state.activeSetId=id;closeModal();return;
+    state.activeSetId=id; showView('manage'); return;
   }
-  if(action==='load-set'){state.activeSetId=el.dataset.id;closeModal();return}
+
   if(action==='save-settings'){
-    const rs=getSet();if(!rs) return;
+    const rsId=el.dataset.rsid; const rs=state.rankSets[rsId]; if(!rs) return;
     const g=id=>document.getElementById(id);
-    const ffEl=g('s-ff'),fvEl=g('s-fv');
     rs.name=(g('s-name')&&g('s-name').value.trim())||rs.name;
     rs.baseElo=Number(g('s-elo')&&g('s-elo').value)||1500;
     rs.kFactor=Number(g('s-k')&&g('s-k').value)||24;
-    rs.filterField=(ffEl&&ffEl.value)||'';rs.filterValue=(fvEl&&fvEl.value)||'';
-    closeModal();return;
+    // filterRules already updated live via pill/select interaction
+    showView('manage'); return;
   }
+
   if(action==='delete-set'){
+    const rsId=el.dataset.rsid;
     if(!confirm('Delete this ranking set? Cannot be undone.')) return;
-    delete state.rankSets[state.activeSetId];
-    state.activeSetId=Object.keys(state.rankSets)[0]||null;
-    closeModal();return;
+    delete state.rankSets[rsId];
+    if(state.activeSetId===rsId) state.activeSetId=Object.keys(state.rankSets)[0]||null;
+    showView('manage'); return;
   }
+
   if(action==='save-fields'){
-    const rs=getSet();if(!rs) return;
+    const rs=getSet(); if(!rs) return;
     rs.visibleFields=[...document.querySelectorAll('.field-toggle input:checked')].map(i=>i.dataset.field);
-    closeModal();return;
+    closeModal(); return;
   }
+
   if(action==='exp-csv'){
-    const rs=getSet();if(!rs){toast('No active ranking set','err');return}
+    const rs=getSet(); if(!rs){toast('No active ranking set','err');return}
     rebuild(rs);
     const rows=getEligible(rs).map(id=>({name:cardById(id)?.name||id,elo:(rs.ratings&&rs.ratings[id])||rs.baseElo||1500}));
     rows.sort((a,b)=>b.elo-a.elo);
     const csv=['rank_set_name,rank,name,elo',...rows.map((r,i)=>`${JSON.stringify(rs.name)},${i+1},${JSON.stringify(r.name)},${Math.round(r.elo)}`)].join('\n');
-    dlFile(csv,'rankings.csv','text/csv');return;
+    dlFile(csv,'rankings.csv','text/csv'); return;
   }
-  if(action==='exp-json'){
-    const rs=getSet();if(!rs){toast('No active ranking set','err');return}
-    rebuild(rs);
+
+  if(action==='exp-json'||action==='exp-json-all'){
+    const setsToExport=action==='exp-json-all'?Object.values(state.rankSets):[getSet()].filter(Boolean);
+    if(!setsToExport.length){toast('No ranking sets to save','err');return}
+    setsToExport.forEach(rs=>rebuild(rs));
     const cardSnap=state.cards.map(c=>{const s={_id:c._id,name:c.name};state.csvHeaders.forEach(h=>{s[h]=c[h]});return s});
-    const payload={rankSet:{id:rs.id,name:rs.name,baseElo:rs.baseElo,kFactor:rs.kFactor,filterField:rs.filterField,filterValue:rs.filterValue,visibleFields:rs.visibleFields,history:rs.history},csvHeaders:state.csvHeaders,cards:cardSnap,exportedAt:new Date().toISOString()};
-    dlFile(JSON.stringify(payload,null,2),'savepoint.json','application/json');return;
+    const payload={
+      version:2,
+      rankSets:setsToExport.map(rs=>({id:rs.id,name:rs.name,baseElo:rs.baseElo,kFactor:rs.kFactor,filterRules:rs.filterRules||[],visibleFields:rs.visibleFields,history:rs.history})),
+      csvHeaders:state.csvHeaders,cards:cardSnap,exportedAt:new Date().toISOString()
+    };
+    const fname=action==='exp-json-all'?'all_sets.json':'savepoint.json';
+    dlFile(JSON.stringify(payload,null,2),fname,'application/json'); return;
   }
+
   if(action==='imp-json'){document.getElementById('json-file').click();return}
 }
 
 function toast(msg,type){
-  const mc=$('modal');if(!mc) return;
-  const d=document.createElement('div');d.className='status-msg '+(type||'ok');d.textContent=msg;
-  mc.appendChild(d);setTimeout(()=>d.remove(),3500);
+  const mc=$('modal'); if(!mc) return;
+  const d=document.createElement('div'); d.className='status-msg '+(type||'ok'); d.textContent=msg;
+  mc.appendChild(d); setTimeout(()=>d.remove(),3500);
 }
-
 function dlFile(content,filename,type){
   try{
     const a=document.createElement('a');
     a.href=URL.createObjectURL(new Blob([content],{type}));
-    a.download=filename;document.body.appendChild(a);a.click();
+    a.download=filename; document.body.appendChild(a); a.click();
     setTimeout(()=>{URL.revokeObjectURL(a.href);document.body.removeChild(a)},1000);
-  }catch(e){toast('Download failed — try a different browser','err')}
+  }catch(e){toast('Download failed','err')}
 }
-
 function parseCSVLine(line){
   const r=[];let cur='',inQ=false;
-  for(const ch of line){
-    if(ch==='"'){inQ=!inQ}else if(ch===','&&!inQ){r.push(cur);cur=''}else cur+=ch;
-  }
+  for(const ch of line){if(ch==='"'){inQ=!inQ}else if(ch===','&&!inQ){r.push(cur);cur=''}else cur+=ch}
   r.push(cur);return r.map(v=>v.replace(/^"|"$/g,'').trim());
 }
-
 function handleCSV(file){
   const reader=new FileReader();
   reader.onload=e=>{
     try{
       const text=e.target.result.replace(/^\uFEFF/,'');
       const lines=text.trim().split(/\r?\n/);
-      if(lines.length<2){setCSVStatus('CSV needs a header row and at least one data row','err');return}
-      const headers=parseCSVLine(lines[0]);
-      const cards=[];
+      if(lines.length<2){setCSVStatus('Needs a header row and at least one data row','err');return}
+      const headers=parseCSVLine(lines[0]); const cards=[];
       lines.slice(1).forEach((line,idx)=>{
         if(!line.trim()) return;
-        const vals=parseCSVLine(line);const card={_id:''};
+        const vals=parseCSVLine(line); const card={_id:''};
         headers.forEach((h,i)=>{card[h]=vals[i]!==undefined?vals[i]:''});
-        card._id=card.id||card.name||String(idx+1);cards.push(card);
+        card._id=card.id||card.name||String(idx+1); cards.push(card);
       });
       if(!cards.length){setCSVStatus('No data rows found','err');return}
-      state.cards=cards;state.csvHeaders=headers.filter(h=>h&&h!=='id');
+      state.cards=cards; state.csvHeaders=headers.filter(h=>h&&h!=='id');
       setCSVStatus(`Loaded ${cards.length} cards with ${state.csvHeaders.length} fields`,'ok');
     }catch(err){setCSVStatus('Parse error: '+err.message,'err')}
   };
   reader.readAsText(file);
 }
-
-function setCSVStatus(msg,type){
-  const el=document.getElementById('csv-status');if(!el) return;
-  el.innerHTML=`<div class="status-msg ${type}">${esc(msg)}</div>`;
-}
+function setCSVStatus(msg,type){const el=document.getElementById('csv-status');if(!el) return;el.innerHTML=`<div class="status-msg ${type}">${esc(msg)}</div>`}
 
 function handleJSON(file){
   const reader=new FileReader();
   reader.onload=e=>{
     try{
       const data=JSON.parse(e.target.result);
-      const rs=data.rankSet;if(!rs||!rs.name) throw new Error('Missing rankSet');
-      let id=rs.id||genId();if(state.rankSets[id]) id=genId();
-      rs.id=id;rs.ratings={};rs.pairCounts={};rs.skipCounts={};
-      state.rankSets[id]=rs;state.activeSetId=id;
+      // Support both v2 (multi-set) and v1 (single set) formats
+      const setsData=data.version===2?data.rankSets:[data.rankSet].filter(Boolean);
+      if(!setsData||!setsData.length) throw new Error('No ranking sets found in file');
+      let imported=0;
+      setsData.forEach(rs=>{
+        if(!rs||!rs.name) return;
+        let id=rs.id||genId(); if(state.rankSets[id]) id=genId();
+        rs.id=id; rs.ratings={}; rs.pairCounts={}; rs.skipCounts={};
+        rs.filterRules=rs.filterRules||[];
+        state.rankSets[id]=rs; state.activeSetId=id; imported++;
+      });
       if(data.csvHeaders&&Array.isArray(data.csvHeaders)) state.csvHeaders=data.csvHeaders;
-      if(data.cards&&Array.isArray(data.cards)&&data.cards.length){
-        if(!state.cards.length){
-          state.cards=data.cards.map(c=>({...c,_id:c._id||c.id||c.name||''}));
-          toast(`Restored ${state.cards.length} cards from save point`,'ok');
-        }else{toast('Ranking set imported. Using currently-loaded card data.','ok')}
-      }else{toast('Save point imported — also import your CSV to load card data','warn')}
+      const cardsData=data.cards||[];
+      if(cardsData.length&&!state.cards.length){
+        state.cards=cardsData.map(c=>({...c,_id:c._id||c.id||c.name||''}));
+        toast(`Imported ${imported} set(s), restored ${state.cards.length} cards`,'ok');
+      } else {
+        toast(`Imported ${imported} set(s)`+(cardsData.length?' (using existing card data)':''),'ok');
+      }
       closeModal();
-    }catch(err){toast('Invalid save point: '+err.message,'err')}
+    }catch(err){toast('Invalid file: '+err.message,'err')}
   };
   reader.readAsText(file);
 }
