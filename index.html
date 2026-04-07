@@ -35,9 +35,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .card-top{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg) var(--radius-lg) 0 0;overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s,border-width .2s}
 .card-top.flash{border-color:var(--green);border-width:2px}
 .card-name{font-size:14px;font-weight:600;text-align:center;padding:10px 8px 8px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-img-wrap{cursor:pointer;width:100%;aspect-ratio:4/5;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card-img-wrap{cursor:pointer;width:100%;aspect-ratio:4/5;background:var(--bg3);display:flex;align-items:flex-start;justify-content:center;overflow:hidden}
 .card-img-wrap:hover{opacity:.88}.card-img-wrap:active{opacity:.75}
-.card-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.card-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:center 10%;display:block}
 .card-img-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text3);font-size:12px}
 .card-img-placeholder svg{width:36px;height:36px;stroke:var(--text3)}
 .card-elo{text-align:center;padding:5px 8px 7px;font-size:11px;font-family:var(--mono);color:var(--text3);background:var(--bg2);letter-spacing:.3px}
@@ -65,6 +65,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .progress-track{height:4px;background:var(--bg3);border-radius:99px;overflow:hidden}
 .progress-fill{height:4px;background:var(--green);border-radius:99px;transition:width .4s ease}
 .progress-label{font-size:11px;color:var(--text3);text-align:right;font-family:var(--mono)}
+.card-elo.hidden{display:none}
+.save-reminder{font-size:11px;color:var(--amber);cursor:pointer;text-align:center;padding:4px 8px;border-radius:var(--radius);border:1px solid var(--amber-bdr);background:var(--amber-bg);transition:background .15s}
+.save-reminder:hover{background:rgba(245,158,11,.2)}
 .no-match{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:60px 20px;text-align:center}
 .no-match h2{font-size:18px;font-weight:600}.no-match p{color:var(--text2);font-size:14px}
 
@@ -180,6 +183,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="progress-wrap">
         <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
         <div class="progress-label" id="prog-label">0% pairs seen</div>
+        <div class="save-reminder" id="save-reminder" style="display:none"></div>
       </div>
     </div>
     <div id="no-match-area" style="display:none" class="no-match">
@@ -194,12 +198,15 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="modal" id="modal"></div>
 </div>
 <script>
-const SYSTEM_FIELDS=new Set(['id','name','image_filename','url','image_url','_id']);
+const SYSTEM_FIELDS=new Set(['image_filename','url','image_url','_id']);
 const IMG_EXTS=['jpg','jpeg','png','webp','gif'];
 const OUTCOME_SCORES={'decisive-left':[1.00,0.00],'left':[0.75,0.25],'slight-left':[0.60,0.40],'tie':[0.50,0.50],'slight-right':[0.40,0.60],'right':[0.25,0.75],'decisive-right':[0.00,1.00],'skip':null};
 
+// Track save state for reminder
+let saveState={matchCountAtSave:0,savedAt:null};
+
 let localFiles=new Map(), localFolderName='';
-let state={cards:[],csvHeaders:[],imageBase:'',rankSets:{},activeSetId:null};
+let state={cards:[],csvHeaders:[],imageBase:'',rankSets:{},activeSetId:null,showElo:true};
 // filterRules per rankSet: [{field, values:[]}]
 
 const $=id=>document.getElementById(id);
@@ -230,12 +237,15 @@ function findLocalImage(c){
   return null;
 }
 
-// ── Filter logic (multi-rule, multi-value) ──
+// ── Filter logic (multi-rule, multi-value, include/exclude) ──
 function getEligible(rs){
   if(!rs||!state.cards.length) return[];
   const rules=(rs.filterRules||[]).filter(r=>r.field&&r.values&&r.values.length>0);
   if(!rules.length) return state.cards.map(c=>c._id);
-  return state.cards.filter(c=>rules.every(r=>r.values.includes(String(c[r.field])))).map(c=>c._id);
+  return state.cards.filter(c=>rules.every(r=>{
+    const match=r.values.includes(String(c[r.field]));
+    return r.exclude ? !match : match;
+  })).map(c=>c._id);
 }
 
 // ── Elo ──
@@ -267,6 +277,7 @@ function nextMatch(rs){
   const pc=rs.pairCounts||{},sc=rs.skipCounts||{};
   const pairs=[];
   for(let i=0;i<el.length;i++) for(let j=i+1;j<el.length;j++){
+    if(el[i]===el[j]) continue; // guard: never self-match
     const k=[el[i],el[j]].sort().join('||');
     if((sc[k]||0)>=2) continue;
     pairs.push({a:el[i],b:el[j],seen:pc[k]||0,skips:sc[k]||0});
@@ -288,6 +299,12 @@ function progress(rs){
   }
   const pct=total?Math.round(seen/total*100):0;
   return{pct,label:`${pct}% pairs seen (${seen}/${total})`};
+}
+function normalizeHeader(h){
+  const lo=h.toLowerCase().trim();
+  if(lo==='id') return 'id';
+  if(lo==='name') return 'name';
+  return h.trim();
 }
 function cardById(id){return state.cards.find(c=>c._id===id)||null}
 
@@ -328,6 +345,28 @@ function getVisFields(rs){
   if(!rs||!rs.visibleFields||!rs.visibleFields.length) return all.slice(0,7);
   return rs.visibleFields.filter(f=>all.includes(f));
 }
+function countResults(rs){
+  return (rs&&rs.history||[]).filter(h=>h.outcome!=='skip').length;
+}
+function renderSaveReminder(rs){
+  const el=$('save-reminder'); if(!el) return;
+  const results=countResults(rs);
+  if(results>0&&results%100===0){
+    let msg='Remember to save your progress';
+    if(saveState.savedAt){
+      msg+=` · last saved at match ${saveState.matchCountAtSave}`;
+    }
+    el.textContent=msg;
+    el.style.display='';
+    el.onclick=()=>showView('saveload');
+  } else if(saveState.savedAt&&results>0){
+    el.textContent=`Last saved at match ${saveState.matchCountAtSave}`;
+    el.style.display='';
+    el.onclick=()=>showView('saveload');
+  } else {
+    el.style.display='none';
+  }
+}
 function renderMain(){
   const rs=getSet();
   const comp=$('comparison-area'),emp=$('empty-state'),nom=$('no-match-area');
@@ -348,7 +387,9 @@ function renderMain(){
     const wrap=document.createElement('div'); wrap.className='card-img-wrap';
     wrap.onclick=()=>submitResult(side==='left'?'left':'right');
     wrap.appendChild(makeImgEl(card));
-    const eloDiv=document.createElement('div'); eloDiv.className='card-elo'; eloDiv.textContent='Elo: '+elo;
+    const eloDiv=document.createElement('div');
+    eloDiv.className='card-elo'+(state.showElo===false?' hidden':'');
+    eloDiv.textContent='Elo: '+elo;
     panel.appendChild(nm); panel.appendChild(wrap); panel.appendChild(eloDiv); row.appendChild(panel);
   });
   const vis=getVisFields(rs); const isEmpty=v=>v===undefined||v===''||v===null||String(v).trim()==='None';
@@ -364,6 +405,7 @@ function renderMain(){
   });
   if(hasStats) sw.appendChild(sp);
   const prog=progress(rs); $('prog-fill').style.width=prog.pct+'%'; $('prog-label').textContent=prog.label;
+  renderSaveReminder(rs);
 }
 
 function submitResult(outcome){
@@ -418,6 +460,15 @@ function bindModal(){
   mc.querySelectorAll('.filter-field-select').forEach(sel=>{
     sel.onchange=()=>rebuildFilterRule(sel.closest('.filter-rule'));
   });
+  // Exclude toggles
+  mc.querySelectorAll('.exclude-toggle').forEach(chk=>{
+    chk.onchange=()=>{
+      const rsId=document.querySelector('[data-rsid]')?.dataset?.rsid;
+      const rs=rsId&&state.rankSets[rsId]; if(!rs) return;
+      const idx=parseInt(chk.dataset.ruleIdx);
+      if(rs.filterRules&&rs.filterRules[idx]) rs.filterRules[idx].exclude=chk.checked;
+    };
+  });
 }
 
 function mHeader(title, backView){
@@ -425,16 +476,17 @@ function mHeader(title, backView){
   return`<div class="modal-header">${backBtn}<span class="modal-title">${esc(title)}</span><button class="close-btn" data-a="close">&times;</button></div>`;
 }
 
-// ── View: Main menu ──
 function vMain(){
   const rs=getSet();
   const loaded=state.cards.length>0;
+  const eloLabel=state.showElo===false?'Show Elo ratings':'Hide Elo ratings';
   return mHeader(rs?rs.name:'Card Elo Ranker')
     +(!loaded?`<div class="warn-note">Import cards first before creating a ranking set</div>`:'')
     +`<div class="modal-section">
       <button class="modal-btn" data-a="v-rankings">View rankings</button>
       <button class="modal-btn" data-a="v-manage">Manage ranking sets</button>
       <button class="modal-btn" data-a="v-fields">Toggle visible fields</button>
+      <button class="modal-btn" data-a="toggle-elo">${eloLabel}</button>
     </div>
     <hr class="modal-divider">
     <div class="modal-section">
@@ -521,6 +573,7 @@ function vEditSet(rsId){
 
 function buildRuleHtml(rule, idx, fields){
   const fieldOpts=fields.map(f=>`<option value="${esc(f)}"${rule.field===f?' selected':''}>${esc(f)}</option>`).join('');
+  const isExclude=rule.exclude===true;
   let pillsHtml='';
   if(rule.field&&state.cards.length){
     const vals=[...new Set(state.cards.map(c=>c[rule.field]).filter(v=>v!==undefined&&v!==''))].sort();
@@ -531,7 +584,13 @@ function buildRuleHtml(rule, idx, fields){
   return`<div class="filter-rule" data-rule-idx="${idx}">
     <div class="filter-rule-header">
       <span class="filter-rule-label">Rule ${idx+1}</span>
-      <button class="rm-rule-btn" data-a="rm-filter-rule" data-idx="${idx}" title="Remove">&#10005;</button>
+      <div style="display:flex;align-items:center;gap:8px">
+        <label style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px;cursor:pointer">
+          <input type="checkbox" class="exclude-toggle" data-rule-idx="${idx}" ${isExclude?'checked':''} style="accent-color:var(--red);cursor:pointer">
+          Exclude
+        </label>
+        <button class="rm-rule-btn" data-a="rm-filter-rule" data-idx="${idx}" title="Remove">&#10005;</button>
+      </div>
     </div>
     <select class="filter-field-select" data-rule-idx="${idx}">
       <option value="">Select field…</option>${fieldOpts}
@@ -628,7 +687,7 @@ function vImages(){
 
 // ── View: Save & load ──
 function vSaveLoad(){
-  return mHeader('Save &amp; load','main')
+  return mHeader('Save & load','main')
     +`<div class="modal-section">
       <div class="modal-label">Save</div>
       <button class="modal-btn" data-a="exp-csv">Export rankings CSV</button>
@@ -652,6 +711,7 @@ function handleAction(action,el){
 
   if(action==='edit-set'){showView('editset',el.dataset.id);return}
   if(action==='load-set'){state.activeSetId=el.dataset.id;closeModal();return}
+  if(action==='toggle-elo'){state.showElo=state.showElo===false?true:false;closeModal();return}
   if(action==='sort-elo'){window._rSort='elo';showView('rankings');return}
   if(action==='sort-name'){window._rSort='name';showView('rankings');return}
 
@@ -726,7 +786,10 @@ function handleAction(action,el){
       csvHeaders:state.csvHeaders,cards:cardSnap,exportedAt:new Date().toISOString()
     };
     const fname=action==='exp-json-all'?'all_sets.json':'savepoint.json';
-    dlFile(JSON.stringify(payload,null,2),fname,'application/json'); return;
+    dlFile(JSON.stringify(payload,null,2),fname,'application/json');
+    saveState={matchCountAtSave:countResults(getSet()),savedAt:Date.now()};
+    renderSaveReminder(getSet());
+    return;
   }
 
   if(action==='imp-json'){document.getElementById('json-file').click();return}
@@ -757,7 +820,9 @@ function handleCSV(file){
       const text=e.target.result.replace(/^\uFEFF/,'');
       const lines=text.trim().split(/\r?\n/);
       if(lines.length<2){setCSVStatus('Needs a header row and at least one data row','err');return}
-      const headers=parseCSVLine(lines[0]); const cards=[];
+      const rawHeaders=parseCSVLine(lines[0]);
+      const headers=rawHeaders.map(normalizeHeader);
+      const cards=[];
       lines.slice(1).forEach((line,idx)=>{
         if(!line.trim()) return;
         const vals=parseCSVLine(line); const card={_id:''};
@@ -765,7 +830,9 @@ function handleCSV(file){
         card._id=card.id||card.name||String(idx+1); cards.push(card);
       });
       if(!cards.length){setCSVStatus('No data rows found','err');return}
-      state.cards=cards; state.csvHeaders=headers.filter(h=>h&&h!=='id');
+      state.cards=cards;
+      // Include id and name as toggleable fields, exclude only internal fields
+      state.csvHeaders=headers.filter(h=>h&&!SYSTEM_FIELDS.has(h.toLowerCase()));
       setCSVStatus(`Loaded ${cards.length} cards with ${state.csvHeaders.length} fields`,'ok');
     }catch(err){setCSVStatus('Parse error: '+err.message,'err')}
   };
